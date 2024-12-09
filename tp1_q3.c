@@ -29,7 +29,7 @@ int main()
         inputSize = read(rCon, entree, readSize);
         entree[inputSize-1] = '\0'; //On met le délimiteur de fin de chaine
 
-        if (strcmp(entree, strExit) == 0) { //Si l'utilisateur tape exit, on break
+        if (strcmp(entree, strExit) == 0 || inputSize == 0) { //Si l'utilisateur tape exit ou si il a fait Ctrl+D, on exit
             write(wCon, msgBye, sizeof(msgBye));
             exit(EXIT_SUCCESS);
         }
