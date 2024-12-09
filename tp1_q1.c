@@ -7,13 +7,15 @@
 #define nbCharExit 4
 #define msgHello "Bienvenue dans le Shell ENSEA.\nPour quitter, tapez 'exit'.\n"
 #define strExit "exit"
+#define wCon 1
+#define rCon 0
 
 int main()
 {
-    write(1, msgHello, sizeof(msgHello));
+    write(wCon, msgHello, sizeof(msgHello)); //Envoie msgHello dans la console
     char* entree;
     while (strncmp(entree, strExit, nbCharExit)) { //Attends que l'utilisateur tape "exit"
-        read(0, entree, sizeof(strExit));
+        read(rCon, entree, sizeof(strExit));
     }
     exit(EXIT_SUCCESS);
 }
