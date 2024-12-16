@@ -9,21 +9,21 @@
 #define enseashExit "enseash [exit:%d] "
 #define enseashSign "enseash [sign:%d] "
 #define msgBye "Bye bye..."
-#define msgCommande "Cette commande n'existe pas ou prends des arguments\n"
+#define msgCommand "Cette commande n'existe pas ou prends des arguments\n"
 #define strExit "exit"
 #define nbCharExit 4
-#define strFortune "fortune"
-#define nbCharFortune 7
 #define wCon 1
 #define rCon 0
 #define readSize 128
 #define bufferSize 64
 #define percentChar 37
 
-int main()
-{
-    write(wCon, msgHello, sizeof(msgHello)); //Envoie msgHello dans la console
-    char entree[readSize];
+void exitBye(char* input, int inputSize);
+void executeCommand(int* statusAdd, char* input);
+
+int main() {
+    write(wCon, msgHello, sizeof(msgHello)); //Send msgHello to the console
+    char input[readSize];
     int status = -2;
     char buffer[bufferSize];
     int inputSize;
@@ -38,7 +38,7 @@ int main()
                 sprintf(buffer, enseashSign, WTERMSIG(status));
             }
             strcat(buffer, "%");
-            for (int i = 0; i < bufferSize; i++) { //On retire les caractères inutiles après le '%'
+            for (int i = 0; i < bufferSize; i++) { //Remove useless caractère after "%"
                 if (buffer[i] == percentChar) {
                     for (int j = i+1; j < bufferSize; j++) {
                         buffer[j] = '\0';
@@ -48,21 +48,29 @@ int main()
             }
             write(wCon, buffer, sizeof(buffer));
         }
-        inputSize = read(rCon, entree, readSize);
-        entree[inputSize-1] = '\0'; //On met le délimiteur de fin de chaine
+        inputSize = read(rCon, input, readSize);
+        input[inputSize-1] = '\0'; //Add the delimiter to the end of the string
 
-        if (strcmp(entree, strExit) == 0 || inputSize == 0) { //Si l'utilisateur tape exit ou si il a fait Ctrl+D, on exit
-            write(wCon, msgBye, sizeof(msgBye));
-            exit(EXIT_SUCCESS);
-        }
+        exitBye(input, inputSize);
 
-        if (fork() == 0) { //On exécute la commande dans un fils
-            if (execvp(entree, (char*) NULL) == -1) {
-                write(wCon, msgCommande, sizeof(msgCommande));
-                exit(EXIT_FAILURE);
-            }
-        }
-        wait(&status);
+        executeCommand(&status, input);
     }
     exit(EXIT_SUCCESS);
+}
+
+void exitBye(char* input, int inputSize) {
+    if (strcmp(input, strExit) == 0 || inputSize == 0) { //If the user typed "exit" or press Ctrl+D, close the shell
+        write(wCon, msgBye, sizeof(msgBye));
+        exit(EXIT_SUCCESS);
+    }
+}
+
+void executeCommand(int* statusAdd, char* input) {
+    if (fork() == 0) { //Execute the command in a child process
+        if (execvp(input, (char*) NULL) == -1) {
+            write(wCon, msgCommand, sizeof(msgCommand));
+            exit(EXIT_FAILURE);
+        }
+    }
+    wait(statusAdd);
 }
