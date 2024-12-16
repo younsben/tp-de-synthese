@@ -12,15 +12,14 @@
 #define rCon 0
 #define readSize 128
 
-int main()
-{
-    write(wCon, msgHello, sizeof(msgHello)); //Envoie msgHello dans la console
-    char entree[readSize];
+int main() {
+    write(wCon, msgHello, sizeof(msgHello)); //Send msgHello to the console
+    char input[readSize];
     int inputSize;
-    while (strcmp(entree, strExit)) { //Attends que l'utilisateur tape "exit"
+    while (strcmp(input, strExit)) { //Wait for user to type "exit"
         write(wCon, enseash, sizeof(enseash));
-        inputSize = read(rCon, entree, readSize);
-        entree[inputSize-1] = '\0'; //On met le délimiteur de fin de chaine
+        inputSize = read(rCon, input, readSize);
+        input[inputSize-1] = '\0'; //Add the delimiter to the end of the string
     }
     exit(EXIT_SUCCESS);
 }
