@@ -6,39 +6,42 @@
 
 #define msgHello "Bienvenue dans le Shell ENSEA.\nPour quitter, tapez 'exit'.\n"
 #define enseash "enseash % "
-#define msgCommande "Cette commande n'existe pas ou prends des arguments\n"
+#define msgCommand "Cette commande n'existe pas ou prends des arguments\n"
 #define strExit "exit"
 #define nbCharExit 4
-#define strFortune "fortune"
-#define nbCharFortune 7
 #define wCon 1
 #define rCon 0
 #define readSize 128
 #define bufferSize 64
 
-int main()
-{
-    write(wCon, msgHello, sizeof(msgHello)); //Envoie msgHello dans la console
-    char entree[readSize];
+void executeCommand(int* statusAdd, char* input);
+
+int main() {
+    write(wCon, msgHello, sizeof(msgHello)); //Send msgHello to the console
+    char input[readSize];
     int status;
     char buffer[bufferSize];
     int inputSize;
     while (1) {
         write(wCon, enseash, sizeof(enseash));
-        inputSize = read(rCon, entree, readSize);
-        entree[inputSize-1] = '\0'; //On met le délimiteur de fin de chaine
+        inputSize = read(rCon, input, readSize);
+        input[inputSize-1] = '\0'; //Add the delimiter to the end of the string
 
-        if (strcmp(entree, strExit) == 0) { //Si l'utilisateur tape exit, on exit
+        if (strcmp(input, strExit) == 0) { //If the user typed "exit", close the shell
             exit(EXIT_SUCCESS);
         }
 
-        if (fork() == 0) { //On exécute la commande dans un fils
-            if (execvp(entree, (char*) NULL) == -1) {
-                write(wCon, msgCommande, sizeof(msgCommande));
-                exit(EXIT_FAILURE);
-            }
-        }
-        wait(&status);
+        executeCommand(&status, input);
     }
     exit(EXIT_SUCCESS);
+}
+
+void executeCommand(int* statusAdd, char* input) {
+    if (fork() == 0) { //Execute the command in a child process
+        if (execvp(input, (char*) NULL) == -1) {
+            write(wCon, msgCommand, sizeof(msgCommand));
+            exit(EXIT_FAILURE);
+        }
+    }
+    wait(statusAdd);
 }
