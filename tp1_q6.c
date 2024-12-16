@@ -20,6 +20,7 @@
 #define percentChar 37
 #define nbArgs 16
 #define lengthArgs 16
+#define defaultValue -2
 
 void exitBye(char* input, int inputSize);
 void decodeAndExecuteCommand(int* statusAdd, char* input, struct timespec* ts1Add, char** args);
@@ -28,13 +29,13 @@ int main() {
     write(wCon, msgHello, sizeof(msgHello)); //Send msgHello to the console
     char input[readSize];
     char** args = malloc(nbArgs*sizeof(char*));
-    int status = -2;
+    int status = defaultValue;
     char buffer[bufferSize];
     int inputSize;
     struct timespec ts1;
     struct timespec ts2;
     while (1) {
-        if (status == -2) {
+        if (status == defaultValue) {
             write(wCon, enseash, sizeof(enseash));
         } else {
             clock_gettime(CLOCK_REALTIME, &ts2);
