@@ -31,10 +31,11 @@ int main()
         if (status == -2) {
             write(wCon, enseash, sizeof(enseash));
         } else {
-            if (status == 0) { //c'est pas ça la différence entre exit et signal
-                sprintf(buffer, enseashExit, status);
-            } else {
-                sprintf(buffer, enseashSign, status); //Du coup mettre le code du signal
+            if (WIFEXITED(status) == 1) {
+                sprintf(buffer, enseashExit, WEXITSTATUS(status));
+            }
+            if (WIFSIGNALED(status) == 1) {
+                sprintf(buffer, enseashSign, WTERMSIG(status));
             }
             strcat(buffer, "%");
             for (int i = 0; i < bufferSize; i++) { //On retire les caractères inutiles après le '%'
