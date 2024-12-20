@@ -8,13 +8,16 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
+#define nbrArg 3
+#define errorArg "There is missing arguments"
+
 int main(int argc, char** argv) {
-    if (argc != 3) {
-        printf("There is missing arguments");
+    if (argc != nbrArg) {
+        printf(errorArg);
         exit(EXIT_SUCCESS);
     }
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < nbrArg; i++) {
         printf("%s\n", argv[i]);
     }
 
