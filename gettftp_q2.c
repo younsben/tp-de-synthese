@@ -8,9 +8,14 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
+#define nbrArg 3
+#define errorArg "There is missing arguments"
+#define lengthString 128
+#define IP "localhost"
+
 int main(int argc, char** argv) {
-    if (argc != 3) {
-        printf("There is missing arguments");
+    if (argc != nbrArg) {
+        printf(errorArg);
         exit(EXIT_SUCCESS);
     }
 
@@ -18,10 +23,10 @@ int main(int argc, char** argv) {
     struct addrinfo *res;
     memset(&hints, 0, sizeof(struct addrinfo));
 
-    getaddrinfo("localhost", NULL, &hints, &res); //Utiliser le argv[1] au lieu de "localhost"
-    char string_target[128] = {0};
-    char string_server[128] = {0};
-    getnameinfo(res->ai_addr, res->ai_addrlen, string_target, 128, string_server, 128, 1 | 2);
+    getaddrinfo(IP, NULL, &hints, &res); //Utiliser le argv[1] au lieu de "localhost"
+    char string_target[lengthString] = {0};
+    char string_server[lengthString] = {0};
+    getnameinfo(res->ai_addr, res->ai_addrlen, string_target, lengthString, string_server, lengthString, 1 | 2);
 
     printf("%s\n", string_target);
 
