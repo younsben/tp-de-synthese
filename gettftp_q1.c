@@ -12,7 +12,7 @@
 #define errorArg "There is missing arguments"
 
 int main(int argc, char** argv) {
-    if (argc != nbrArg) {
+    if (argc != nbrArg) { //Show an error because there is missing arguments
         printf(errorArg);
         exit(EXIT_SUCCESS);
     }

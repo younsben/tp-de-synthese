@@ -11,10 +11,9 @@
 #define nbrArg 3
 #define errorArg "There is missing arguments"
 #define lengthString 128
-#define IP "localhost"
 
 int main(int argc, char** argv) {
-    if (argc != nbrArg) {
+    if (argc != nbrArg) { //Show an error because there is missing arguments
         printf(errorArg);
         exit(EXIT_SUCCESS);
     }
@@ -23,10 +22,10 @@ int main(int argc, char** argv) {
     struct addrinfo *res;
     memset(&hints, 0, sizeof(struct addrinfo));
 
-    getaddrinfo(IP, NULL, &hints, &res); //Utiliser le argv[1] au lieu de "localhost"
+    getaddrinfo(argv[1], NULL, &hints, &res);
     char string_target[lengthString] = {0};
     char string_server[lengthString] = {0};
-    getnameinfo(res->ai_addr, res->ai_addrlen, string_target, lengthString, string_server, lengthString, 1 | 2);
+    getnameinfo(res->ai_addr, res->ai_addrlen, string_target, lengthString, string_server, lengthString, 1 | 2); //Fill the string_target and string_server with the server info
 
     printf("%s\n", string_target);
 
